@@ -1,6 +1,8 @@
 package com.example.demo.Database.Characters;
 
 import com.example.demo.Database.Comics.Comics;
+import com.example.demo.Database.Comics.ComicsCharacters;
+import com.example.demo.Database.Comics.ComicsCreators;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,8 +21,8 @@ public class Characters {
     private String short_name;
     private LocalDateTime last_sync;
 
-    @ManyToMany(mappedBy = "characters")
-    private List<Comics> comics;
+    @OneToMany(mappedBy = "character")
+    private List<ComicsCharacters> comicsCharacters;
 
     public Characters() {
     }
@@ -88,7 +90,6 @@ public class Characters {
                 ", name='" + name + '\'' +
                 ", short_name='" + short_name + '\'' +
                 ", last_sync=" + last_sync +
-                ", comics=" + comics +
                 '}';
     }
 }

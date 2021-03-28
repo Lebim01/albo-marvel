@@ -16,8 +16,8 @@ public class Comics {
     private Integer api_id;
     private String title;
 
-    @ManyToMany
-    private List<Characters> characters;
+    @OneToMany(mappedBy = "comic")
+    private List<ComicsCharacters> comicsCharacters;
 
     @OneToMany(mappedBy = "comic")
     private List<ComicsCreators> comicsCreators;
@@ -60,12 +60,12 @@ public class Comics {
         this.title = title;
     }
 
-    public List<Characters> getCharacters() {
-        return characters;
+    public List<ComicsCharacters> getCharacters() {
+        return comicsCharacters;
     }
 
-    public void setCharacters(List<Characters> characters) {
-        this.characters = characters;
+    public void setCharacters(List<ComicsCharacters> characters) {
+        this.comicsCharacters = characters;
     }
 
     public List<ComicsCreators> getComicsCreators() {
@@ -74,5 +74,13 @@ public class Comics {
 
     public void setComicsCreators(List<ComicsCreators> comicsCreators) {
         this.comicsCreators = comicsCreators;
+    }
+
+    public List<ComicsCharacters> getComicsCharacters() {
+        return comicsCharacters;
+    }
+
+    public void setComicsCharacters(List<ComicsCharacters> comicsCharacters) {
+        this.comicsCharacters = comicsCharacters;
     }
 }

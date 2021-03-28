@@ -2,14 +2,12 @@ package com.example.demo.Rest;
 
 import com.example.demo.Database.Characters.Characters;
 import com.example.demo.Database.Characters.CharactersService;
-import com.example.demo.Database.Comics.Comics;
-import com.example.demo.Database.Comics.ComicsCreators;
-import com.example.demo.Database.Comics.ComicsCreatorsRepository;
-import com.example.demo.Database.Comics.ComicsService;
+import com.example.demo.Database.Comics.*;
 import com.example.demo.Database.Creators.Creators;
 import com.example.demo.Database.Creators.CreatorsService;
 import com.example.demo.MarvelApi.Characters.Entities.Character;
 import com.example.demo.MarvelApi.Characters.Entities.CharacterSummary;
+import com.example.demo.MarvelApi.Characters.GetCharactersResponse;
 import com.example.demo.MarvelApi.Comics.Entities.Comic;
 import com.example.demo.MarvelApi.Comics.Entities.ComicSummary;
 import com.example.demo.MarvelApi.Comics.GetComicResponse;
@@ -52,8 +50,7 @@ public class SyncCharacter {
 
         charactersResponse.setCharacter(character.getName());
 
-        Characters newCharter = new Characters(character.getId(), character.getName(), character.getName());
-        charactersService.addNewCharacter(newCharter);
+        Characters _character = charactersService.getCharacterCreateIfNotExists(character);
 
         for(ComicSummary cs:character.getComics().getItems()){
             Curl curlComic  = new Curl();
@@ -61,11 +58,19 @@ public class SyncCharacter {
 
             for(Comic comic: comicResponse.getData().getResults()){
                 Comics _comic = comicsService.getComicCreateIfNotExists(comic);
-                List<Creators> creatorsList = new ArrayList<>();
-                List<ComicsCreators> comicsCreators = new ArrayList<>();
 
-                for(CharacterSummary chs:comic.getCharacters().getItems()){
-                    charactersResponse.addCharacterComic(chs.getName(), comic.getTitle());
+                List<ComicsCreators> comicsCreators = new ArrayList<>();
+                List<ComicsCharacters> comicsCharacters = new ArrayList<>();
+
+                for(CharacterSummary chs: comic.getCharacters().getItems()){
+                    Curl curlCharacter  = new Curl();
+                    GetCharactersResponse characterResponse = new GetCharactersResponse(curlCharacter.getResultUrl(chs.getResourceURI()));
+                    Character character_related = characterResponse.getData().getResults().get(0);
+
+                    Characters _character_related = charactersService.getCharacterCreateIfNotExists(character_related);
+
+                    ComicsCharacters _comicsCharacters = new ComicsCharacters(_comic, _character_related);
+                    comicsService.addComicCharacter(_comicsCharacters);
                 }
 
                 for(CreatorSummary crs: comic.getCreators().getItems()){
@@ -83,19 +88,10 @@ public class SyncCharacter {
                             comicsCreators.add(_comicsCreators);
                             break;
                     }
-
-                    /*if(crs.getRole().equals("colorist")){
-                        charactersResponse.addColorist(creator);
-                    }
-                    else if(crs.getRole().equals("editor")){
-                        charactersResponse.addEditor(creator);
-                    }
-                    else if(crs.getRole().equals("writer")){
-                        charactersResponse.addWriter(creator);
-                    }*/
                 }
 
                 _comic.setComicsCreators(comicsCreators);
+                _comic.setComicsCharacters(comicsCharacters);
             }
         }
     }

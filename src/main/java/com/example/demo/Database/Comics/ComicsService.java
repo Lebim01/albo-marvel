@@ -12,10 +12,12 @@ import java.util.Optional;
 @Service
 public class ComicsService {
     private final ComicsRepository comicsRepository;
+    private final ComicsCharactersRepository comicsCharactersRepository;
 
     @Autowired
-    public ComicsService(ComicsRepository comicsRepository){
+    public ComicsService(ComicsRepository comicsRepository, ComicsCharactersRepository comicsCharactersRepository){
         this.comicsRepository = comicsRepository;
+        this.comicsCharactersRepository = comicsCharactersRepository;
     }
 
     public Comics getComicCreateIfNotExists(Comic comic){
@@ -46,5 +48,9 @@ public class ComicsService {
         }
 
         return comic;
+    }
+
+    public void addComicCharacter(ComicsCharacters comicsCharacters){
+        comicsCharactersRepository.save(comicsCharacters);
     }
 }

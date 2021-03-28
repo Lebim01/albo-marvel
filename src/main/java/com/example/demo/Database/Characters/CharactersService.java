@@ -3,6 +3,7 @@ package com.example.demo.Database.Characters;
 import com.example.demo.Database.Comics.Comics;
 import com.example.demo.Database.Comics.ComicsRepository;
 import com.example.demo.Database.Creators.Creators;
+import com.example.demo.MarvelApi.Characters.Entities.Character;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,12 +37,19 @@ public class CharactersService {
         return charactersRepository.findAll();
     }
 
-    public void addNewCharacter(Characters character){
-        Optional<Characters> charactersRepositoryById = charactersRepository.findByApiId(character.getApi_id());
-        if(charactersRepositoryById.isPresent()){
-            throw new IllegalStateException("character does exists");
+    public Characters getCharacterCreateIfNotExists(Character character){
+        Optional<Characters> optionalCharacters = charactersRepository.findByApiId(character.getId());
+        if(optionalCharacters.isPresent()){
+            return updateCharacter(optionalCharacters.get().getId(), character.getName(), LocalDateTime.now());
+        }else{
+            return addNewCharacter(character);
         }
-        charactersRepository.save(character);
+    }
+
+    public Characters addNewCharacter(Character character){
+        Characters characters = new Characters(character.getId(), character.getName(), character.getName());
+        charactersRepository.save(characters);
+        return characters;
     }
 
     public void deleteCharacter(Long characterId){
@@ -52,7 +60,7 @@ public class CharactersService {
     }
 
     @Transactional
-    public void updateCharacter(Long characterId, String name, LocalDateTime last_sync){
+    public Characters updateCharacter(Long characterId, String name, LocalDateTime last_sync){
         Characters character = charactersRepository.findById(characterId)
                 .orElseThrow(() -> new IllegalStateException("character with id " + characterId + " does not exists"));
 
@@ -63,6 +71,8 @@ public class CharactersService {
         if(last_sync != null && !Objects.equals(character.getLast_sync(), last_sync)){
             character.setLast_sync(last_sync);
         }
+
+        return character;
     }
 
     public List<String> getWriters(Long characterId){
