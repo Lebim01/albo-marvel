@@ -19,7 +19,7 @@ public class ComicsService {
         this.comicsCharactersRepository = comicsCharactersRepository;
     }
 
-    public boolean isExists(Integer comidId){
+    public boolean isExistsByApiId(Integer comidId){
         Optional<Comics> optionalComics = comicsRepository.findByApiId(comidId);
         return optionalComics.isPresent();
     }

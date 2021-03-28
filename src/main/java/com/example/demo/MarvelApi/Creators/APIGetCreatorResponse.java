@@ -5,10 +5,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class GetCreatorResponse {
+public class APIGetCreatorResponse {
     private APICreatorDataContainer data;
 
-    public GetCreatorResponse(String json){
+    public APIGetCreatorResponse(String json){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode jsonNode = objectMapper.readTree(json);

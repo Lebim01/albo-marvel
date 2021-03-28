@@ -3,9 +3,9 @@ package com.example.demo.MarvelApi.Characters;
 import com.example.demo.Utils.Curl;
 import com.example.demo.MarvelApi.Characters.Entities.APICharacter;
 
-public class GetCharacters {
+public class APIGetCharacters {
 
-    public static GetCharactersResponse getByName(String characterName){
+    public static APIGetCharactersResponse getByName(String characterName){
         Curl curl = new Curl("characters", "&name="+characterName);
         String response = curl.getResult();
 
@@ -13,13 +13,13 @@ public class GetCharacters {
             throw new IllegalStateException("No se han encontrado heroes usando: " + characterName);
         }
 
-        GetCharactersResponse data = new GetCharactersResponse(response);
+        APIGetCharactersResponse data = new APIGetCharactersResponse(response);
 
         return data;
     }
 
     public static APICharacter getCharacterByName(String characterName){
-        GetCharactersResponse charactersResponse = getByName(characterName);
+        APIGetCharactersResponse charactersResponse = getByName(characterName);
 
         if(charactersResponse.getData().getResults().isEmpty()){
             throw new IllegalStateException("No se han encontrado heroes usando: " + characterName);

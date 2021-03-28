@@ -2,16 +2,16 @@ package com.example.demo.MarvelApi.Characters;
 
 import com.example.demo.Utils.Curl;
 
-public class GetCharacter {
+public class APIGetCharacter {
 
-    public GetCharacter(){
+    public APIGetCharacter(){
 
     }
 
-    public GetCharacterResponse getCharacter(Integer api_id){
+    public APIGetCharacterResponse getCharacter(Integer api_id){
         Curl curl = new Curl("characters/"+api_id);
         String response = curl.getResult();
 
-        return new GetCharacterResponse(response);
+        return new APIGetCharacterResponse(response);
     }
 }

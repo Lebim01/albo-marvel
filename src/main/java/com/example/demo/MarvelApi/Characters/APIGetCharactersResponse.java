@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class GetCharactersResponse {
+public class APIGetCharactersResponse {
     private Integer code;
     private String status;
     private String copyright;
@@ -13,7 +13,7 @@ public class GetCharactersResponse {
     private String attributionHTML;
     private APICharacterDataContainer data;
 
-    public GetCharactersResponse(String response) {
+    public APIGetCharactersResponse(String response) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode jsonNode = objectMapper.readTree(response);

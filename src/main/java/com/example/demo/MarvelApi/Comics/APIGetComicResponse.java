@@ -5,10 +5,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class GetComicResponse {
+public class APIGetComicResponse {
     private APIComicDataContainer data;
 
-    public GetComicResponse(String json){
+    public APIGetComicResponse(String json){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
