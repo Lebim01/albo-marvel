@@ -42,9 +42,9 @@ public class CollaboratorsController {
 
         CollaboratorsResponse response = new CollaboratorsResponse();
         response.setCharacter(character.getName());
-        response.setWriters(charactersService.getWriters(character.getId()));
+        /*response.setWriters(charactersService.getWriters(character.getId()));
         response.setColorists(charactersService.getColorists(character.getId()));
-        response.setEditors(charactersService.getEditors(character.getId()));
+        response.setEditors(charactersService.getEditors(character.getId()));*/
 
         return response;
     }

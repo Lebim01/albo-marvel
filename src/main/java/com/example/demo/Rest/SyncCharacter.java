@@ -10,7 +10,9 @@ import com.example.demo.MarvelApi.Characters.Entities.CharacterSummary;
 import com.example.demo.MarvelApi.Comics.Entities.Comic;
 import com.example.demo.MarvelApi.Comics.Entities.ComicSummary;
 import com.example.demo.MarvelApi.Comics.GetComicResponse;
+import com.example.demo.MarvelApi.Creators.Entities.Creator;
 import com.example.demo.MarvelApi.Creators.Entities.CreatorSummary;
+import com.example.demo.MarvelApi.Creators.GetCreatorResponse;
 import com.example.demo.Rest.Characters.CharactersResponse;
 import com.example.demo.Utils.Curl;
 
@@ -46,7 +48,6 @@ public class SyncCharacter {
         charactersResponse.setCharacter(character.getName());
 
         Characters newCharter = new Characters(character.getId(), character.getName(), character.getName());
-        System.out.println(newCharter.toString());
         charactersService.addNewCharacter(newCharter);
 
         for(ComicSummary cs:character.getComics().getItems()){
@@ -58,9 +59,21 @@ public class SyncCharacter {
                     charactersResponse.addCharacterComic(chs.getName(), c.getTitle());
                 }
 
-                /*for(CreatorSummary crs:c.getCreators().getItems()){
-                    charactersResponse.addCharacterComic(crs.getName(), crs.getRole());
-                }*/
+                for(CreatorSummary crs:c.getCreators().getItems()){
+                    Curl curlCreator  = new Curl();
+                    GetCreatorResponse creatorResponse = new GetCreatorResponse(curlCreator.getResultUrl(cs.getResourceURI()));
+                    Creator creator = creatorResponse.getData().getResults().get(0);
+
+                    if(crs.getRole().equals("colorist")){
+                        charactersResponse.addColorist(creator);
+                    }
+                    else if(crs.getRole().equals("editor")){
+                        charactersResponse.addEditor(creator);
+                    }
+                    else if(crs.getRole().equals("writer")){
+                        charactersResponse.addWriter(creator);
+                    }
+                }
             }
         }
 
@@ -71,6 +84,9 @@ public class SyncCharacter {
             for(Comic comic: comicResponse.getData().getResults()) {
                 Comics _comic = comicsService.getComicCreateIfNotExists(comic);
 
+                
+
+                //_comic.setComicsCreators();
             }
         }
     }

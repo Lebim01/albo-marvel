@@ -1,5 +1,7 @@
 package com.example.demo.Rest.Characters;
 
+import com.example.demo.MarvelApi.Creators.Entities.Creator;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -10,6 +12,9 @@ public class CharactersResponse {
     private String character;
     private LocalDateTime last_sync;
     private List<CharacterComics> characters;
+    private List<Creator> editors;
+    private List<Creator> writers;
+    private List<Creator> colorists;
 
     public CharactersResponse(){
         this.last_sync = LocalDateTime.now();
@@ -58,5 +63,44 @@ public class CharactersResponse {
                 this.characters.add(characterComics);
             }
         }
+    }
+
+    public List<Creator> getEditors() {
+        return editors;
+    }
+
+    public void addEditor(Creator creator){
+        if(!this.editors.contains(creator))
+            this.editors.add(creator);
+    }
+
+    public List<Creator> getWriters() {
+        return writers;
+    }
+
+    public void addWriter(Creator creator){
+        if(!this.writers.contains(creator))
+            this.writers.add(creator);
+    }
+
+    public List<Creator> getColorists() {
+        return colorists;
+    }
+
+    public void addColorist(Creator creator){
+        if(!this.colorists.contains(creator))
+            this.colorists.add(creator);
+    }
+
+    public void setEditors(List<Creator> editors) {
+        this.editors = editors;
+    }
+
+    public void setWriters(List<Creator> writers) {
+        this.writers = writers;
+    }
+
+    public void setColorists(List<Creator> colorists) {
+        this.colorists = colorists;
     }
 }

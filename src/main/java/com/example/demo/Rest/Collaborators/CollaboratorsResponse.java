@@ -38,42 +38,5 @@ public class CollaboratorsResponse {
         this.last_sync = last_sync;
     }
 
-    public List<String> getEditors() {
-        return editors;
-    }
 
-    public void addEditor(String creator){
-        if(!this.editors.contains(creator))
-            this.editors.add(creator);
-    }
-
-    public List<String> getWriters() {
-        return writers;
-    }
-
-    public void addWriter(String creator){
-        if(!this.writers.contains(creator))
-            this.writers.add(creator);
-    }
-
-    public List<String> getColorists() {
-        return colorists;
-    }
-
-    public void addColorist(String creator){
-        if(!this.colorists.contains(creator))
-            this.colorists.add(creator);
-    }
-
-    public void setEditors(List<String> editors) {
-        this.editors = editors;
-    }
-
-    public void setWriters(List<String> writers) {
-        this.writers = writers;
-    }
-
-    public void setColorists(List<String> colorists) {
-        this.colorists = colorists;
-    }
 }
