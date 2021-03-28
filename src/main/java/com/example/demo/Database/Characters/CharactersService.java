@@ -29,6 +29,14 @@ public class CharactersService {
         this.creatorsRepository = creatorsRepository;
     }
 
+    public Optional<Characters> getCharacterByShortName(String short_name){
+        return charactersRepository.findByShortName(short_name);
+    }
+
+    public Optional<Characters> isNeedSync(Long id){
+        return charactersRepository.isNeedSync(id);
+    }
+
     public Optional<Characters> getCharacterByName(String name){
         return charactersRepository.findByName(name);
     }
@@ -51,7 +59,7 @@ public class CharactersService {
     }
 
     public Characters addNewCharacter(APICharacter character){
-        Characters characters = new Characters(character.getId(), character.getName(), character.getName());
+        Characters characters = new Characters(character.getId(), character.getName(), "");
         charactersRepository.save(characters);
         return characters;
     }

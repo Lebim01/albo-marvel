@@ -7,6 +7,8 @@ import com.example.demo.Database.Creators.Creators;
 import com.example.demo.Database.Creators.CreatorsService;
 import com.example.demo.MarvelApi.Characters.Entities.APICharacter;
 import com.example.demo.MarvelApi.Characters.Entities.APICharacterSummary;
+import com.example.demo.MarvelApi.Characters.GetCharacter;
+import com.example.demo.MarvelApi.Characters.GetCharacterResponse;
 import com.example.demo.MarvelApi.Characters.GetCharactersResponse;
 import com.example.demo.MarvelApi.Comics.Entities.APIComic;
 import com.example.demo.MarvelApi.Comics.Entities.APIComicSummary;
@@ -14,45 +16,41 @@ import com.example.demo.MarvelApi.Comics.GetComicResponse;
 import com.example.demo.MarvelApi.Creators.Entities.APICreator;
 import com.example.demo.MarvelApi.Creators.Entities.APICreatorSummary;
 import com.example.demo.MarvelApi.Creators.GetCreatorResponse;
-import com.example.demo.Rest.Characters.CharactersResponse;
 import com.example.demo.Utils.Curl;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.demo.MarvelApi.Characters.GetCharacters.getCharacterByName;
-
 public class SyncCharacter {
 
     private final CharactersService charactersService;
     private final ComicsService comicsService;
     private final CreatorsService creatorsService;
+    private final Characters character;
 
     public SyncCharacter(
+            Characters character,
             CharactersService charactersService,
             ComicsService comicsService,
             CreatorsService creatorsService
     ){
+        this.character = character;
         this.charactersService = charactersService;
         this.comicsService = comicsService;
         this.creatorsService = creatorsService;
     }
 
-    public void sync(String characterName){
-        APICharacter character = getCharacterByName(characterName);
-
-        if(!needSync(character.getId())){
+    public void sync(){
+        if(!needSync(this.character.getId())){
             return;
         }
 
-        CharactersResponse charactersResponse = new CharactersResponse();
+        GetCharacter getCharacter = new GetCharacter();
+        GetCharacterResponse getCharacterResponse = getCharacter.getCharacter(this.character.getApi_id());
+        APICharacter character = getCharacterResponse.getData().getResults().get(0);
 
-        charactersResponse.setCharacter(character.getName());
-
-        Characters _character = charactersService.getCharacterCreateIfNotExists(character);
-
-        for(APIComicSummary cs:character.getComics().getItems()){
+        for(APIComicSummary cs: character.getComics().getItems()){
             Curl curlComic  = new Curl();
             GetComicResponse comicResponse = new GetComicResponse(curlComic.getResultUrl(cs.getResourceURI()));
 
@@ -100,8 +98,9 @@ public class SyncCharacter {
         }
     }
 
-    private boolean needSync(Integer id){
-        Optional<Characters> character = this.charactersService.getCharacter(id);
+    private boolean needSync(Long id){
+        Optional<Characters> character = this.charactersService.isNeedSync(id);
+
         if(character.isPresent()){
             return false;
         }

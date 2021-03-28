@@ -31,15 +31,15 @@ public class CharactersController {
     @GetMapping(path="{character}")
     public CharactersResponse getCharacters(@PathVariable("character") String characterName){
 
-        SyncCharacter sync = new SyncCharacter(charactersService, comicsService, creatorsService);
-        sync.sync(characterName);
-
-        Optional<Characters> optionalCharacters = charactersService.getCharacterByName(characterName);
+        Optional<Characters> optionalCharacters = charactersService.getCharacterByShortName(characterName);
         if(!optionalCharacters.isPresent()){
-            throw new IllegalStateException("Character does not exists");
+            throw new IllegalStateException("Character not available");
         }
 
         Characters character = optionalCharacters.get();
+
+        SyncCharacter sync = new SyncCharacter(character, charactersService, comicsService, creatorsService);
+        sync.sync();
 
         CharactersResponse response = new CharactersResponse();
         response.setLast_sync(character.getLast_sync());
