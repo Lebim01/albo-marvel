@@ -1,4 +1,4 @@
-package com.example.demo.MarvelApi.Comics.Entities;
+package com.example.demo.MarvelApi.Characters.Entities;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -8,17 +8,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class ComicDataContainer {
-    private Integer offset; // (int, optional): The requested offset (number of skipped results) of the call.,
-    private Integer limit; // (int, optional): The requested result limit.,
-    private Integer total; // (int, optional): The total number of resources available given the current filter set.,
-    private Integer count; // (int, optional): The total number of results returned by this call.,
-    private List<Comic> results; // (Array[Comic], optional): The list of comics returned by the call
+public class APICharacterDataContainer {
+    private Integer offset;
+    private Integer limit;
+    private Integer total;
+    private Integer count;
+    private List<APICharacter> results;
 
-    public ComicDataContainer(String json){
+    public APICharacterDataContainer(String response){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            JsonNode jsonNode = objectMapper.readTree(json);
+            JsonNode jsonNode = objectMapper.readTree(response);
             this.offset = jsonNode.get("offset").asInt();
             this.limit = jsonNode.get("limit").asInt();
             this.total = jsonNode.get("total").asInt();
@@ -27,7 +27,7 @@ public class ComicDataContainer {
 
             Iterator<JsonNode> items = jsonNode.get("results").elements();
             while(items.hasNext()){
-                this.results.add(new Comic(items.next().toString()));
+                this.results.add(new APICharacter(items.next().toString()));
             }
 
         } catch (JsonProcessingException e) {
@@ -67,11 +67,11 @@ public class ComicDataContainer {
         this.count = count;
     }
 
-    public List<Comic> getResults() {
+    public List<APICharacter> getResults() {
         return results;
     }
 
-    public void setResults(List<Comic> results) {
+    public void setResults(List<APICharacter> results) {
         this.results = results;
     }
 }

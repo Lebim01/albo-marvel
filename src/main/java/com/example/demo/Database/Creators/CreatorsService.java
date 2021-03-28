@@ -2,7 +2,7 @@ package com.example.demo.Database.Creators;
 
 import com.example.demo.Database.Comics.ComicsCreators;
 import com.example.demo.Database.Comics.ComicsCreatorsRepository;
-import com.example.demo.MarvelApi.Creators.Entities.Creator;
+import com.example.demo.MarvelApi.Creators.Entities.APICreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ public class CreatorsService {
         return creatorsRepository.findAll();
     }
 
-    public Creators getCreatorCreateIfNotExists(Creator creator){
+    public Creators getCreatorCreateIfNotExists(APICreator creator){
         Optional<Creators> optionalCreators = creatorsRepository.findByApiId(creator.getId());
         if(optionalCreators.isPresent()){
             return updateCreator(optionalCreators.get().getId(), creator.getFullName());
@@ -34,7 +34,7 @@ public class CreatorsService {
         }
     }
 
-    public Creators addNewCreator(Creator creator){
+    public Creators addNewCreator(APICreator creator){
         Optional<Creators> creatorsOptional = creatorsRepository.findByApiId(creator.getId());
         if(creatorsOptional.isPresent()){
             throw new IllegalStateException("creator does exists");

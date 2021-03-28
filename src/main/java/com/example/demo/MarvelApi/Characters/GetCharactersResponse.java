@@ -1,6 +1,6 @@
 package com.example.demo.MarvelApi.Characters;
 
-import com.example.demo.MarvelApi.Characters.Entities.CharacterDataContainer;
+import com.example.demo.MarvelApi.Characters.Entities.APICharacterDataContainer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,7 +11,7 @@ public class GetCharactersResponse {
     private String copyright;
     private String attributionText;
     private String attributionHTML;
-    private CharacterDataContainer data;
+    private APICharacterDataContainer data;
 
     public GetCharactersResponse(String response) {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -22,18 +22,18 @@ public class GetCharactersResponse {
             this.copyright = jsonNode.get("copyright").asText();
             this.attributionText = jsonNode.get("attributionText").asText();
             this.attributionHTML = jsonNode.get("attributionHTML").asText();
-            this.data = new CharacterDataContainer(jsonNode.get("data").toString());
+            this.data = new APICharacterDataContainer(jsonNode.get("data").toString());
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
     }
 
-    public CharacterDataContainer getData() {
+    public APICharacterDataContainer getData() {
         return data;
     }
 
-    public void setData(CharacterDataContainer data) {
+    public void setData(APICharacterDataContainer data) {
         this.data = data;
     }
 

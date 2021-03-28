@@ -1,7 +1,6 @@
 package com.example.demo.Database.Comics;
 
-import com.example.demo.Database.Creators.Creators;
-import com.example.demo.MarvelApi.Comics.Entities.Comic;
+import com.example.demo.MarvelApi.Comics.Entities.APIComic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,7 @@ public class ComicsService {
         return optionalComics.isPresent();
     }
 
-    public Comics getComicCreateIfNotExists(Comic comic){
+    public Comics getComicCreateIfNotExists(APIComic comic){
         Optional<Comics> optionalComics = comicsRepository.findByApiId(comic.getId());
         if(optionalComics.isPresent()){
             return updateComic(optionalComics.get().getId(), comic.getTitle());
@@ -38,7 +37,7 @@ public class ComicsService {
         return comicsRepository.findAll();
     }
 
-    public Comics addNewComic(Comic comic){
+    public Comics addNewComic(APIComic comic){
         Comics comics = new Comics(comic.getId(), comic.getTitle());
         comicsRepository.save(comics);
         return comics;

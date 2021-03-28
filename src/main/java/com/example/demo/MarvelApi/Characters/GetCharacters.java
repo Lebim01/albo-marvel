@@ -1,7 +1,7 @@
 package com.example.demo.MarvelApi.Characters;
 
 import com.example.demo.Utils.Curl;
-import com.example.demo.MarvelApi.Characters.Entities.Character;
+import com.example.demo.MarvelApi.Characters.Entities.APICharacter;
 
 public class GetCharacters {
 
@@ -27,7 +27,7 @@ public class GetCharacters {
         return data;
     }
 
-    public static Character getCharacterByName(String characterName){
+    public static APICharacter getCharacterByName(String characterName){
         GetCharactersResponse charactersResponse = getByName(characterName);
 
         if(charactersResponse.getData().getResults().isEmpty()){

@@ -5,14 +5,14 @@ import com.example.demo.Database.Characters.CharactersService;
 import com.example.demo.Database.Comics.*;
 import com.example.demo.Database.Creators.Creators;
 import com.example.demo.Database.Creators.CreatorsService;
-import com.example.demo.MarvelApi.Characters.Entities.Character;
-import com.example.demo.MarvelApi.Characters.Entities.CharacterSummary;
+import com.example.demo.MarvelApi.Characters.Entities.APICharacter;
+import com.example.demo.MarvelApi.Characters.Entities.APICharacterSummary;
 import com.example.demo.MarvelApi.Characters.GetCharactersResponse;
-import com.example.demo.MarvelApi.Comics.Entities.Comic;
-import com.example.demo.MarvelApi.Comics.Entities.ComicSummary;
+import com.example.demo.MarvelApi.Comics.Entities.APIComic;
+import com.example.demo.MarvelApi.Comics.Entities.APIComicSummary;
 import com.example.demo.MarvelApi.Comics.GetComicResponse;
-import com.example.demo.MarvelApi.Creators.Entities.Creator;
-import com.example.demo.MarvelApi.Creators.Entities.CreatorSummary;
+import com.example.demo.MarvelApi.Creators.Entities.APICreator;
+import com.example.demo.MarvelApi.Creators.Entities.APICreatorSummary;
 import com.example.demo.MarvelApi.Creators.GetCreatorResponse;
 import com.example.demo.Rest.Characters.CharactersResponse;
 import com.example.demo.Utils.Curl;
@@ -40,7 +40,7 @@ public class SyncCharacter {
     }
 
     public void sync(String characterName){
-        Character character = getCharacterByName(characterName);
+        APICharacter character = getCharacterByName(characterName);
 
         if(!needSync(character.getId())){
             return;
@@ -52,11 +52,11 @@ public class SyncCharacter {
 
         Characters _character = charactersService.getCharacterCreateIfNotExists(character);
 
-        for(ComicSummary cs:character.getComics().getItems()){
+        for(APIComicSummary cs:character.getComics().getItems()){
             Curl curlComic  = new Curl();
             GetComicResponse comicResponse = new GetComicResponse(curlComic.getResultUrl(cs.getResourceURI()));
 
-            for(Comic comic: comicResponse.getData().getResults()){
+            for(APIComic comic: comicResponse.getData().getResults()){
                 boolean isNew = !comicsService.isExists(comic.getId());
 
                 if(isNew) {
@@ -65,10 +65,10 @@ public class SyncCharacter {
                     List<ComicsCreators> comicsCreators = new ArrayList<>();
                     List<ComicsCharacters> comicsCharacters = new ArrayList<>();
 
-                    for (CharacterSummary chs : comic.getCharacters().getItems()) {
+                    for (APICharacterSummary chs : comic.getCharacters().getItems()) {
                         Curl curlCharacter = new Curl();
                         GetCharactersResponse characterResponse = new GetCharactersResponse(curlCharacter.getResultUrl(chs.getResourceURI()));
-                        Character character_related = characterResponse.getData().getResults().get(0);
+                        APICharacter character_related = characterResponse.getData().getResults().get(0);
 
                         Characters _character_related = charactersService.getCharacterCreateIfNotExists(character_related);
 
@@ -76,10 +76,10 @@ public class SyncCharacter {
                         comicsService.addComicCharacter(_comicsCharacters);
                     }
 
-                    for (CreatorSummary crs : comic.getCreators().getItems()) {
+                    for (APICreatorSummary crs : comic.getCreators().getItems()) {
                         Curl curlCreator = new Curl();
                         GetCreatorResponse creatorResponse = new GetCreatorResponse(curlCreator.getResultUrl(crs.getResourceURI()));
-                        Creator creator = creatorResponse.getData().getResults().get(0);
+                        APICreator creator = creatorResponse.getData().getResults().get(0);
 
                         switch (crs.getRole()) {
                             case "colorist":

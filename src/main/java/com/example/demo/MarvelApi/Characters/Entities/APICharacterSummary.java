@@ -1,21 +1,20 @@
-package com.example.demo.MarvelApi.Creators.Entities;
+package com.example.demo.MarvelApi.Characters.Entities;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class CreatorSummary {
-    private String resourceURI; // (string, optional): The path to the individual creator resource.,
-    private String name; // (string, optional): The full name of the creator.,
+public class APICharacterSummary {
+    private String resourceURI; // (string, optional): The path to the individual character resource.,
+    private String name; // (string, optional): The full name of the character.,
     private String role; // (string, optional): The role of the creator in the parent entity.
 
-    CreatorSummary(String json){
+    APICharacterSummary(String json){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
             this.resourceURI = jsonNode.get("resourceURI").asText();
             this.name = jsonNode.get("name").asText();
-            this.role = jsonNode.get("role").asText();
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -44,14 +43,5 @@ public class CreatorSummary {
 
     public void setRole(String role) {
         this.role = role;
-    }
-
-    @Override
-    public String toString() {
-        return "CreatorSummary{" +
-                "resourceURI='" + resourceURI + '\'' +
-                ", name='" + name + '\'' +
-                ", role='" + role + '\'' +
-                '}';
     }
 }

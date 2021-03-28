@@ -1,26 +1,26 @@
 package com.example.demo.MarvelApi.Comics.Entities;
 
-import com.example.demo.MarvelApi.Characters.Entities.CharacterList;
-import com.example.demo.MarvelApi.Creators.Entities.CreatorList;
+import com.example.demo.MarvelApi.Characters.Entities.APICharacterList;
+import com.example.demo.MarvelApi.Creators.Entities.APICreatorList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
-public class Comic {
+public class APIComic {
     private Integer id; // (int, optional): The unique ID of the comic resource.,
     private String title; // (string, optional): The canonical title of the comic.,
-    private CreatorList creators; // (CreatorList, optional): A resource list containing the creators associated with this comic.,
-    private CharacterList characters; // (CharacterList, optional): A resource list containing the characters which appear in this comic.,
+    private APICreatorList creators; // (CreatorList, optional): A resource list containing the creators associated with this comic.,
+    private APICharacterList characters; // (CharacterList, optional): A resource list containing the characters which appear in this comic.,
 
-    Comic(String json){
+    APIComic(String json){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
             this.id = jsonNode.get("id").asInt();
             this.title = jsonNode.get("title").asText();
-            this.creators = new CreatorList(jsonNode.get("creators").toString());
-            this.characters = new CharacterList(jsonNode.get("characters").toString());
+            this.creators = new APICreatorList(jsonNode.get("creators").toString());
+            this.characters = new APICharacterList(jsonNode.get("characters").toString());
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -43,19 +43,19 @@ public class Comic {
         this.title = title;
     }
 
-    public CreatorList getCreators() {
+    public APICreatorList getCreators() {
         return creators;
     }
 
-    public void setCreators(CreatorList creators) {
+    public void setCreators(APICreatorList creators) {
         this.creators = creators;
     }
 
-    public CharacterList getCharacters() {
+    public APICharacterList getCharacters() {
         return characters;
     }
 
-    public void setCharacters(CharacterList characters) {
+    public void setCharacters(APICharacterList characters) {
         this.characters = characters;
     }
 

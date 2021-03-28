@@ -1,7 +1,5 @@
 package com.example.demo.Rest.Characters;
 
-import com.example.demo.MarvelApi.Creators.Entities.Creator;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;

@@ -4,8 +4,7 @@ import com.example.demo.Database.Comics.Comics;
 import com.example.demo.Database.Comics.ComicsRepository;
 import com.example.demo.Database.Creators.Creators;
 import com.example.demo.Database.Creators.CreatorsRepository;
-import com.example.demo.MarvelApi.Characters.Entities.Character;
-import com.example.demo.MarvelApi.Comics.Entities.Comic;
+import com.example.demo.MarvelApi.Characters.Entities.APICharacter;
 import com.example.demo.Rest.Characters.CharacterComics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,7 +41,7 @@ public class CharactersService {
         return charactersRepository.findAll();
     }
 
-    public Characters getCharacterCreateIfNotExists(Character character){
+    public Characters getCharacterCreateIfNotExists(APICharacter character){
         Optional<Characters> optionalCharacters = charactersRepository.findByApiId(character.getId());
         if(optionalCharacters.isPresent()){
             return updateCharacter(optionalCharacters.get().getId(), character.getName(), LocalDateTime.now());
@@ -51,17 +50,10 @@ public class CharactersService {
         }
     }
 
-    public Characters addNewCharacter(Character character){
+    public Characters addNewCharacter(APICharacter character){
         Characters characters = new Characters(character.getId(), character.getName(), character.getName());
         charactersRepository.save(characters);
         return characters;
-    }
-
-    public void deleteCharacter(Long characterId){
-        if(!charactersRepository.existsById(characterId)){
-            throw new IllegalStateException("character with id "+ characterId + " does not exists");
-        }
-        charactersRepository.deleteById(characterId);
     }
 
     @Transactional

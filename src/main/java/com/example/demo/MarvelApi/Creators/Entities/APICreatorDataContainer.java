@@ -1,6 +1,5 @@
 package com.example.demo.MarvelApi.Creators.Entities;
 
-import com.example.demo.MarvelApi.Comics.Entities.Comic;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,14 +8,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class CreatorDataContainer {
+public class APICreatorDataContainer {
     private Integer offset; // (int, optional): The requested offset (number of skipped results) of the call.,
     private Integer limit; // (int, optional): The requested result limit.,
     private Integer total; // (int, optional): The total number of resources available given the current filter set.,
     private Integer count; // (int, optional): The total number of results returned by this call.,
-    private List<Creator> results; // (Array[Comic], optional): The list of comics returned by the call
+    private List<APICreator> results; // (Array[Comic], optional): The list of comics returned by the call
 
-    public CreatorDataContainer(String json){
+    public APICreatorDataContainer(String json){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
@@ -28,7 +27,7 @@ public class CreatorDataContainer {
 
             Iterator<JsonNode> items = jsonNode.get("results").elements();
             while(items.hasNext()){
-                this.results.add(new Creator(items.next().toString()));
+                this.results.add(new APICreator(items.next().toString()));
             }
 
         } catch (JsonProcessingException e) {
@@ -68,11 +67,11 @@ public class CreatorDataContainer {
         this.count = count;
     }
 
-    public List<Creator> getResults() {
+    public List<APICreator> getResults() {
         return results;
     }
 
-    public void setResults(List<Creator> results) {
+    public void setResults(List<APICreator> results) {
         this.results = results;
     }
 }

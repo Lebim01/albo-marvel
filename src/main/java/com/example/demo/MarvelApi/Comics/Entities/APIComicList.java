@@ -1,4 +1,4 @@
-package com.example.demo.MarvelApi.Characters.Entities;
+package com.example.demo.MarvelApi.Comics.Entities;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class CharacterList {
-    private Integer available; // (int, optional): The number of total available characters in this list. Will always be greater than or equal to the "returned" value.,
-    private Integer returned; // (int, optional): The number of characters returned in this collection (up to 20).,
-    private String collectionURI; // (string, optional): The path to the full list of characters in this collection.,
-    private List<CharacterSummary> items; // (Array[CharacterSummary], optional): The list of returned characters in this collection.
+public class APIComicList {
+    private Integer available; // (int, optional): The number of total available issues in this list. Will always be greater than or equal to the "returned" value.,
+    private Integer returned; // (int, optional): The number of issues returned in this collection (up to 20).,
+    private String collectionURI; // (string, optional): The path to the full list of issues in this collection.,
+    private List<APIComicSummary> items; // (Array[ComicSummary], optional): The list of returned issues in this collection.
 
-    public CharacterList(String json){
+    public APIComicList(String json){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
@@ -25,7 +25,7 @@ public class CharacterList {
 
             Iterator<JsonNode> items = jsonNode.get("items").elements();
             while(items.hasNext()){
-                this.items.add(new CharacterSummary(items.next().toString()));
+                this.items.add(new APIComicSummary(items.next().toString()));
             }
 
         } catch (JsonProcessingException e) {
@@ -57,11 +57,11 @@ public class CharacterList {
         this.collectionURI = collectionURI;
     }
 
-    public List<CharacterSummary> getItems() {
+    public List<APIComicSummary> getItems() {
         return items;
     }
 
-    public void setItems(List<CharacterSummary> items) {
+    public void setItems(List<APIComicSummary> items) {
         this.items = items;
     }
 }

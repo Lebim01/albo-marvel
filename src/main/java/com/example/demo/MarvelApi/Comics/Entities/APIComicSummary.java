@@ -4,11 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ComicSummary {
+public class APIComicSummary {
     private String resourceURI;// (string, optional): The path to the individual comic resource.,
     private String name;// (string, optional): The canonical name of the comic.
 
-    ComicSummary(String json){
+    APIComicSummary(String json){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode jsonNode = objectMapper.readTree(json);

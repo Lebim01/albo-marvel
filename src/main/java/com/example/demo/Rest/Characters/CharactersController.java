@@ -4,14 +4,7 @@ import com.example.demo.Database.Characters.Characters;
 import com.example.demo.Database.Characters.CharactersService;
 import com.example.demo.Database.Comics.ComicsService;
 import com.example.demo.Database.Creators.CreatorsService;
-import com.example.demo.Rest.Collaborators.CollaboratorsResponse;
 import com.example.demo.Rest.SyncCharacter;
-import com.example.demo.Utils.Curl;
-import com.example.demo.MarvelApi.Characters.Entities.Character;
-import com.example.demo.MarvelApi.Characters.Entities.CharacterSummary;
-import com.example.demo.MarvelApi.Comics.Entities.Comic;
-import com.example.demo.MarvelApi.Comics.Entities.ComicSummary;
-import com.example.demo.MarvelApi.Comics.GetComicResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
-
-import static com.example.demo.MarvelApi.Characters.GetCharacters.getCharacterByName;
 
 @RestController
 @RequestMapping(path="marvel/characters")

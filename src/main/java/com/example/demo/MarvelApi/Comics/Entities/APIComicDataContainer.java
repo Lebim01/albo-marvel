@@ -1,4 +1,4 @@
-package com.example.demo.MarvelApi.Characters.Entities;
+package com.example.demo.MarvelApi.Comics.Entities;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -8,17 +8,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class CharacterDataContainer {
-    private Integer offset;
-    private Integer limit;
-    private Integer total;
-    private Integer count;
-    private List<Character> results;
+public class APIComicDataContainer {
+    private Integer offset; // (int, optional): The requested offset (number of skipped results) of the call.,
+    private Integer limit; // (int, optional): The requested result limit.,
+    private Integer total; // (int, optional): The total number of resources available given the current filter set.,
+    private Integer count; // (int, optional): The total number of results returned by this call.,
+    private List<APIComic> results; // (Array[Comic], optional): The list of comics returned by the call
 
-    public CharacterDataContainer(String response){
+    public APIComicDataContainer(String json){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            JsonNode jsonNode = objectMapper.readTree(response);
+            JsonNode jsonNode = objectMapper.readTree(json);
             this.offset = jsonNode.get("offset").asInt();
             this.limit = jsonNode.get("limit").asInt();
             this.total = jsonNode.get("total").asInt();
@@ -27,7 +27,7 @@ public class CharacterDataContainer {
 
             Iterator<JsonNode> items = jsonNode.get("results").elements();
             while(items.hasNext()){
-                this.results.add(new Character(items.next().toString()));
+                this.results.add(new APIComic(items.next().toString()));
             }
 
         } catch (JsonProcessingException e) {
@@ -67,11 +67,11 @@ public class CharacterDataContainer {
         this.count = count;
     }
 
-    public List<Character> getResults() {
+    public List<APIComic> getResults() {
         return results;
     }
 
-    public void setResults(List<Character> results) {
+    public void setResults(List<APIComic> results) {
         this.results = results;
     }
 }
