@@ -29,9 +29,9 @@ public class CollaboratorsController {
     }
 
     @GetMapping(path="{character}")
-    public CollaboratorsResponse getCollaborators(@PathVariable("character") String characterName){
+    public CollaboratorsResponse getCollaborators(@PathVariable("character") String short_name){
 
-        Optional<Characters> optionalCharacters = charactersService.getCharacterByShortName(characterName);
+        Optional<Characters> optionalCharacters = charactersService.getCharacterByShortName(short_name);
         if(!optionalCharacters.isPresent()){
             throw new IllegalStateException("Character not available");
         }

@@ -29,9 +29,9 @@ public class CharactersController {
     }
 
     @GetMapping(path="{character}")
-    public CharactersResponse getCharacters(@PathVariable("character") String characterName){
+    public CharactersResponse getCharacters(@PathVariable("character") String short_name){
 
-        Optional<Characters> optionalCharacters = charactersService.getCharacterByShortName(characterName);
+        Optional<Characters> optionalCharacters = charactersService.getCharacterByShortName(short_name);
         if(!optionalCharacters.isPresent()){
             throw new IllegalStateException("Character not available");
         }

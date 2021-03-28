@@ -55,6 +55,9 @@ public class SyncCharacter {
             APIGetComicResponse comicResponse = new APIGetComicResponse(curlComic.getResultUrl(cs.getResourceURI()));
 
             for(APIComic comic: comicResponse.getData().getResults()){
+                /**
+                 * Sync new comic if does not exists
+                 */
                 boolean isNew = !comicsService.isExistsByApiId(comic.getId());
 
                 if(isNew) {
@@ -63,6 +66,9 @@ public class SyncCharacter {
                     List<ComicsCreators> comicsCreators = new ArrayList<>();
                     List<ComicsCharacters> comicsCharacters = new ArrayList<>();
 
+                    /**
+                     * Get characters related by comic
+                     */
                     for (APICharacterSummary chs : comic.getCharacters().getItems()) {
                         Curl curlCharacter = new Curl();
                         APIGetCharactersResponse characterResponse = new APIGetCharactersResponse(curlCharacter.getResultUrl(chs.getResourceURI()));
@@ -75,7 +81,7 @@ public class SyncCharacter {
                     }
 
                     /**
-                     * Get and insert writers, editors and writers by comic
+                     * Get creators (by role [writer, editor, colorist]) and save by comic
                      */
                     for (APICreatorSummary crs : comic.getCreators().getItems()) {
                         Curl curlCreator = new Curl();
@@ -102,6 +108,9 @@ public class SyncCharacter {
     }
 
     private boolean needSync(Long id){
+        /**
+         * only sync when character updated more than 1 day ago
+         */
         Optional<Characters> character = this.charactersService.isNeedSync(id);
 
         if(character.isPresent()){
