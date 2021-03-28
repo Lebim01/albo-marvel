@@ -12,6 +12,7 @@ public class Creators {
     @SequenceGenerator(name="creators_sequence", sequenceName="creators_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "creators_sequence")
     private Long id;
+    private Integer api_id;
     private String name;
 
     @OneToMany(mappedBy = "creator")
@@ -20,12 +21,14 @@ public class Creators {
     public Creators() {
     }
 
-    public Creators(Long id, String name) {
+    public Creators(Long id, Integer api_id, String name) {
         this.id = id;
+        this.api_id = api_id;
         this.name = name;
     }
 
-    public Creators(String name) {
+    public Creators(Integer api_id, String name) {
+        this.api_id = api_id;
         this.name = name;
     }
 
@@ -35,6 +38,14 @@ public class Creators {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getApi_id() {
+        return api_id;
+    }
+
+    public void setApi_id(Integer api_id) {
+        this.api_id = api_id;
     }
 
     public String getName() {

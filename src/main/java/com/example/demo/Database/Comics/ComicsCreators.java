@@ -1,59 +1,23 @@
 package com.example.demo.Database.Comics;
 
-import com.example.demo.Database.Characters.Characters;
 import com.example.demo.Database.Creators.Creators;
 
 import javax.persistence.*;
-import java.io.Serializable;
-
-@Embeddable
-class ComicsCreatorsKey implements Serializable {
-
-    @Column(name = "comics_id")
-    Long comicsId;
-
-    @Column(name = "creators_id")
-    Long creatorsId;
-
-    public ComicsCreatorsKey() {
-    }
-
-    public ComicsCreatorsKey(Long comicsId, Long creatorsId) {
-        this.comicsId = comicsId;
-        this.creatorsId = creatorsId;
-    }
-
-    public Long getComicsId() {
-        return comicsId;
-    }
-
-    public void setComicsId(Long comicsId) {
-        this.comicsId = comicsId;
-    }
-
-    public Long getCreatorsId() {
-        return creatorsId;
-    }
-
-    public void setCreatorsId(Long creatorsId) {
-        this.creatorsId = creatorsId;
-    }
-}
 
 @Entity
 @Table(name="comics_creators")
 public class ComicsCreators {
 
-    @EmbeddedId
-    ComicsCreatorsKey id;
+    @Id
+    @SequenceGenerator(name="comics_creators_sequence", sequenceName="comics_creators_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comics_creators_sequence")
+    Long id;
 
     @ManyToOne
-    @MapsId("comicsId")
     @JoinColumn(name = "comics_id")
     Comics comic;
 
     @ManyToOne
-    @MapsId("creatorsId")
     @JoinColumn(name = "creators_id")
     Creators creator;
 
@@ -62,7 +26,7 @@ public class ComicsCreators {
     public ComicsCreators() {
     }
 
-    public ComicsCreators(ComicsCreatorsKey id, Comics comic, Creators creator, String role) {
+    public ComicsCreators(Long id, Comics comic, Creators creator, String role) {
         this.id = id;
         this.comic = comic;
         this.creator = creator;
@@ -75,11 +39,11 @@ public class ComicsCreators {
         this.role = role;
     }
 
-    public ComicsCreatorsKey getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(ComicsCreatorsKey id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
