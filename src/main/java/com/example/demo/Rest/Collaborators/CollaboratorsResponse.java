@@ -1,0 +1,79 @@
+package com.example.demo.Rest.Collaborators;
+
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+public class CollaboratorsResponse {
+
+    private String character;
+    private LocalDateTime last_sync;
+    private List<String> editors;
+    private List<String> writers;
+    private List<String> colorists;
+
+    public CollaboratorsResponse(){
+        this.last_sync = LocalDateTime.now();
+        this.editors = new ArrayList<>();
+        this.writers = new ArrayList<>();
+        this.colorists = new ArrayList<>();
+    }
+
+    public String getCharacter() {
+        return character;
+    }
+
+    public void setCharacter(String character) {
+        this.character = character;
+    }
+
+    public String getLast_sync() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        return last_sync.format(formatter);
+    }
+
+    public void setLast_sync(LocalDateTime last_sync) {
+        this.last_sync = last_sync;
+    }
+
+    public List<String> getEditors() {
+        return editors;
+    }
+
+    public void addEditor(String creator){
+        if(!this.editors.contains(creator))
+            this.editors.add(creator);
+    }
+
+    public List<String> getWriters() {
+        return writers;
+    }
+
+    public void addWriter(String creator){
+        if(!this.writers.contains(creator))
+            this.writers.add(creator);
+    }
+
+    public List<String> getColorists() {
+        return colorists;
+    }
+
+    public void addColorist(String creator){
+        if(!this.colorists.contains(creator))
+            this.colorists.add(creator);
+    }
+
+    public void setEditors(List<String> editors) {
+        this.editors = editors;
+    }
+
+    public void setWriters(List<String> writers) {
+        this.writers = writers;
+    }
+
+    public void setColorists(List<String> colorists) {
+        this.colorists = colorists;
+    }
+}
