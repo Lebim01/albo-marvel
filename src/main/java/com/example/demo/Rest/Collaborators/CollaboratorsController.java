@@ -41,6 +41,7 @@ public class CollaboratorsController {
         Characters character = optionalCharacters.get();
 
         CollaboratorsResponse response = new CollaboratorsResponse();
+        response.setLast_sync(character.getLast_sync());
         response.setCharacter(character.getName());
         response.setWriters(charactersService.getWriters(character.getId()));
         response.setColorists(charactersService.getColorists(character.getId()));

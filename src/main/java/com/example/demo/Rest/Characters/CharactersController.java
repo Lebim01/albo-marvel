@@ -42,6 +42,7 @@ public class CharactersController {
         Characters character = optionalCharacters.get();
 
         CharactersResponse response = new CharactersResponse();
+        response.setLast_sync(character.getLast_sync());
         response.setCharacter(character.getName());
         response.setCharacters(charactersService.getCharactersRelated(character.getId()));
 

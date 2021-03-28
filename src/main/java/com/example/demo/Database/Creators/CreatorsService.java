@@ -44,13 +44,6 @@ public class CreatorsService {
         return creators;
     }
 
-    public void deleteCreator(Long creatorId){
-        if(!creatorsRepository.existsById(creatorId)){
-            throw new IllegalStateException("creator with id "+ creatorId + " does not exists");
-        }
-        creatorsRepository.deleteById(creatorId);
-    }
-
     public Creators updateCreator(Long creatorId, String name){
         Creators creator = creatorsRepository.findById(creatorId)
                 .orElseThrow(() -> new IllegalStateException("creator with id " + creatorId + " does not exists"));
