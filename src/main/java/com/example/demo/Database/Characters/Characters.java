@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name="characters")
+@Table(name="characters", indexes = {
+        @Index(unique = true, name = "idx_id_character", columnList = "api_id")
+})
 public class Characters {
     @Id
     @SequenceGenerator(name="characters_sequence", sequenceName="characters_sequence", allocationSize = 1)

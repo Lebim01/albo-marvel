@@ -18,6 +18,7 @@ import com.example.demo.MarvelApi.Creators.Entities.APICreatorSummary;
 import com.example.demo.MarvelApi.Creators.APIGetCreatorResponse;
 import com.example.demo.Utils.Curl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,30 +28,39 @@ public class SyncCharacter {
     private final CharactersService charactersService;
     private final ComicsService comicsService;
     private final CreatorsService creatorsService;
-    private final Characters character;
 
     public SyncCharacter(
-            Characters character,
             CharactersService charactersService,
             ComicsService comicsService,
             CreatorsService creatorsService
     ){
-        this.character = character;
         this.charactersService = charactersService;
         this.comicsService = comicsService;
         this.creatorsService = creatorsService;
     }
 
-    public void sync(){
-        if(!needSync(this.character.getId())){
+    public void syncAll(){
+        System.out.println("Syncing all characters");
+        List<Characters> characters = this.charactersService.getCharactersToSync();
+        for(Characters character: characters){
+            this.sync(character);
+        }
+    }
+
+    public void sync(Characters character){
+        System.out.println("Syncing " + character.getName());
+        if(!needSync(character.getId())){
+            System.out.println(character.getName() + " don't need sync");
             return;
         }
 
-        APIGetCharacter getCharacter = new APIGetCharacter();
-        APIGetCharacterResponse getCharacterResponse = getCharacter.getCharacter(this.character.getApi_id());
-        APICharacter character = getCharacterResponse.getData().getResults().get(0);
+        charactersService.updateCharacter(character.getId(), character.getName(), LocalDateTime.now());
 
-        for(APIComicSummary cs: character.getComics().getItems()){
+        APIGetCharacter getCharacter = new APIGetCharacter();
+        APIGetCharacterResponse getCharacterResponse = getCharacter.getCharacter(character.getApi_id());
+        APICharacter apiCharacter = getCharacterResponse.getData().getResults().get(0);
+
+        for(APIComicSummary cs: apiCharacter.getComics().getItems()){
             Curl curlComic  = new Curl();
             APIGetComicResponse comicResponse = new APIGetComicResponse(curlComic.getResultUrl(cs.getResourceURI()));
 

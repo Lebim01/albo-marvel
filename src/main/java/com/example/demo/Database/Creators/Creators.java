@@ -6,7 +6,9 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name="creators")
+@Table(name="creators", indexes = {
+        @Index(unique = true, name = "idx_id_creator", columnList = "api_id")
+})
 public class Creators {
     @Id
     @SequenceGenerator(name="creators_sequence", sequenceName="creators_sequence", allocationSize = 1)

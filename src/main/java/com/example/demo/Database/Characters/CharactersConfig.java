@@ -22,7 +22,13 @@ public class CharactersConfig {
                     "capamerica"
             );
 
-            repository.saveAll(List.of(ironman, capamerica));
+            if(!repository.findByApiId(ironman.getApi_id()).isPresent()){
+                repository.save(ironman);
+            }
+
+            if(!repository.findByApiId(capamerica.getApi_id()).isPresent()){
+                repository.save(capamerica);
+            }
         };
     }
 }

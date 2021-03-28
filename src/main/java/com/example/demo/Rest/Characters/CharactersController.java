@@ -38,8 +38,8 @@ public class CharactersController {
 
         Characters character = optionalCharacters.get();
 
-        SyncCharacter sync = new SyncCharacter(character, charactersService, comicsService, creatorsService);
-        sync.sync();
+        SyncCharacter sync = new SyncCharacter(charactersService, comicsService, creatorsService);
+        sync.sync(character);
 
         CharactersResponse response = new CharactersResponse();
         response.setLast_sync(character.getLast_sync());

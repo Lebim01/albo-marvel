@@ -37,12 +37,8 @@ public class CharactersService {
         return charactersRepository.isNeedSync(id);
     }
 
-    public Optional<Characters> getCharacterByName(String name){
-        return charactersRepository.findByName(name);
-    }
-
-    public Optional<Characters> getCharacter(Integer id){
-        return charactersRepository.findByApiId(id);
+    public List<Characters> getCharactersToSync(){
+        return charactersRepository.findCharactersToSync();
     }
 
     public List<Characters> getCharacters(){

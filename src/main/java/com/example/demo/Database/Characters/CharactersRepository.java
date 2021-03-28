@@ -10,7 +10,10 @@ import java.util.Optional;
 @Repository
 public interface CharactersRepository extends JpaRepository<Characters, Long> {
 
-    @Query("SELECT c FROM Characters c WHERE id = ?1 AND DATEDIFF(CURRENT_DATE, last_sync) >= 1")
+    @Query(value = "SELECT c.* FROM Characters c WHERE short_name != ''", nativeQuery = true)
+    List<Characters> findCharactersToSync();
+
+    @Query(value = "SELECT c.* FROM Characters c WHERE id = ?1 AND DATEDIFF(CURRENT_DATE, last_sync) >= 1", nativeQuery = true)
     Optional<Characters> isNeedSync(Long id);
 
     @Query("SELECT c FROM Characters c WHERE short_name = ?1")
