@@ -38,5 +38,27 @@ public class CollaboratorsResponse {
         this.last_sync = last_sync;
     }
 
+    public List<String> getEditors() {
+        return editors;
+    }
 
+    public void setEditors(List<String> editors) {
+        this.editors = editors;
+    }
+
+    public List<String> getWriters() {
+        return writers;
+    }
+
+    public void setWriters(List<String> writers) {
+        this.writers = writers;
+    }
+
+    public List<String> getColorists() {
+        return colorists;
+    }
+
+    public void setColorists(List<String> colorists) {
+        this.colorists = colorists;
+    }
 }

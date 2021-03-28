@@ -57,41 +57,45 @@ public class SyncCharacter {
             GetComicResponse comicResponse = new GetComicResponse(curlComic.getResultUrl(cs.getResourceURI()));
 
             for(Comic comic: comicResponse.getData().getResults()){
-                Comics _comic = comicsService.getComicCreateIfNotExists(comic);
+                boolean isNew = !comicsService.isExists(comic.getId());
 
-                List<ComicsCreators> comicsCreators = new ArrayList<>();
-                List<ComicsCharacters> comicsCharacters = new ArrayList<>();
+                if(isNew) {
+                    Comics _comic = comicsService.getComicCreateIfNotExists(comic);
 
-                for(CharacterSummary chs: comic.getCharacters().getItems()){
-                    Curl curlCharacter  = new Curl();
-                    GetCharactersResponse characterResponse = new GetCharactersResponse(curlCharacter.getResultUrl(chs.getResourceURI()));
-                    Character character_related = characterResponse.getData().getResults().get(0);
+                    List<ComicsCreators> comicsCreators = new ArrayList<>();
+                    List<ComicsCharacters> comicsCharacters = new ArrayList<>();
 
-                    Characters _character_related = charactersService.getCharacterCreateIfNotExists(character_related);
+                    for (CharacterSummary chs : comic.getCharacters().getItems()) {
+                        Curl curlCharacter = new Curl();
+                        GetCharactersResponse characterResponse = new GetCharactersResponse(curlCharacter.getResultUrl(chs.getResourceURI()));
+                        Character character_related = characterResponse.getData().getResults().get(0);
 
-                    ComicsCharacters _comicsCharacters = new ComicsCharacters(_comic, _character_related);
-                    comicsService.addComicCharacter(_comicsCharacters);
-                }
+                        Characters _character_related = charactersService.getCharacterCreateIfNotExists(character_related);
 
-                for(CreatorSummary crs: comic.getCreators().getItems()){
-                    Curl curlCreator  = new Curl();
-                    GetCreatorResponse creatorResponse = new GetCreatorResponse(curlCreator.getResultUrl(crs.getResourceURI()));
-                    Creator creator = creatorResponse.getData().getResults().get(0);
-
-                    switch (crs.getRole()){
-                        case "colorist":
-                        case "editor":
-                        case "writer":
-                            Creators _creator = creatorsService.getCreatorCreateIfNotExists(creator);
-                            ComicsCreators _comicsCreators = new ComicsCreators(_comic, _creator, crs.getRole());
-                            creatorsService.addComicCreator(_comicsCreators);
-                            comicsCreators.add(_comicsCreators);
-                            break;
+                        ComicsCharacters _comicsCharacters = new ComicsCharacters(_comic, _character_related);
+                        comicsService.addComicCharacter(_comicsCharacters);
                     }
-                }
 
-                _comic.setComicsCreators(comicsCreators);
-                _comic.setComicsCharacters(comicsCharacters);
+                    for (CreatorSummary crs : comic.getCreators().getItems()) {
+                        Curl curlCreator = new Curl();
+                        GetCreatorResponse creatorResponse = new GetCreatorResponse(curlCreator.getResultUrl(crs.getResourceURI()));
+                        Creator creator = creatorResponse.getData().getResults().get(0);
+
+                        switch (crs.getRole()) {
+                            case "colorist":
+                            case "editor":
+                            case "writer":
+                                Creators _creator = creatorsService.getCreatorCreateIfNotExists(creator);
+                                ComicsCreators _comicsCreators = new ComicsCreators(_comic, _creator, crs.getRole());
+                                creatorsService.addComicCreator(_comicsCreators);
+                                comicsCreators.add(_comicsCreators);
+                                break;
+                        }
+                    }
+
+                    _comic.setComicsCreators(comicsCreators);
+                    _comic.setComicsCharacters(comicsCharacters);
+                }
             }
         }
     }

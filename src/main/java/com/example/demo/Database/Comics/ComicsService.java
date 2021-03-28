@@ -20,6 +20,11 @@ public class ComicsService {
         this.comicsCharactersRepository = comicsCharactersRepository;
     }
 
+    public boolean isExists(Integer comidId){
+        Optional<Comics> optionalComics = comicsRepository.findByApiId(comidId);
+        return optionalComics.isPresent();
+    }
+
     public Comics getComicCreateIfNotExists(Comic comic){
         Optional<Comics> optionalComics = comicsRepository.findByApiId(comic.getId());
         if(optionalComics.isPresent()){

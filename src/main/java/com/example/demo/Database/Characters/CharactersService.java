@@ -3,6 +3,7 @@ package com.example.demo.Database.Characters;
 import com.example.demo.Database.Comics.Comics;
 import com.example.demo.Database.Comics.ComicsRepository;
 import com.example.demo.Database.Creators.Creators;
+import com.example.demo.Database.Creators.CreatorsRepository;
 import com.example.demo.MarvelApi.Characters.Entities.Character;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,13 @@ import java.util.Optional;
 public class CharactersService {
     private final CharactersRepository charactersRepository;
     private final ComicsRepository comicsRepository;
+    private final CreatorsRepository creatorsRepository;
 
     @Autowired
-    public CharactersService(CharactersRepository charactersRepository, ComicsRepository comicsRepository){
+    public CharactersService(CharactersRepository charactersRepository, ComicsRepository comicsRepository, CreatorsRepository creatorsRepository){
         this.charactersRepository = charactersRepository;
         this.comicsRepository = comicsRepository;
+        this.creatorsRepository = creatorsRepository;
     }
 
     public Optional<Characters> getCharacterByName(String name){
@@ -86,9 +89,10 @@ public class CharactersService {
         Characters character = optionalCharacters.get();
         List<Comics> comics = comicsRepository.findByCharacterId(character.getId());
         for(Comics comic: comics){
-            List<Creators> _writers = comicsRepository.findWritersByComicId(comic.getId());
+            List<Creators> _writers = creatorsRepository.findWritersByComicId(comic.getId());
             for(Creators creator: _writers){
-                writers.add(creator.getName());
+                if(!writers.contains(creator.getName()))
+                    writers.add(creator.getName());
             }
         }
 
@@ -106,9 +110,10 @@ public class CharactersService {
         Characters character = optionalCharacters.get();
         List<Comics> comics = comicsRepository.findByCharacterId(character.getId());
         for(Comics comic: comics){
-            List<Creators> _colorists = comicsRepository.findColoristsByComicId(comic.getId());
+            List<Creators> _colorists = creatorsRepository.findColoristsByComicId(comic.getId());
             for(Creators creator: _colorists){
-                colorists.add(creator.getName());
+                if(!colorists.contains(creator.getName()))
+                    colorists.add(creator.getName());
             }
         }
 
@@ -126,9 +131,10 @@ public class CharactersService {
         Characters character = optionalCharacters.get();
         List<Comics> comics = comicsRepository.findByCharacterId(character.getId());
         for(Comics comic: comics){
-            List<Creators> _editors = comicsRepository.findEditorsByComicId(comic.getId());
+            List<Creators> _editors = creatorsRepository.findEditorsByComicId(comic.getId());
             for(Creators creator: _editors){
-                editors.add(creator.getName());
+                if(!editors.contains(creator.getName()))
+                    editors.add(creator.getName());
             }
         }
 

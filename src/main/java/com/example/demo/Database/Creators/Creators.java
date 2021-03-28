@@ -55,4 +55,13 @@ public class Creators {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "Creators{" +
+                "id=" + id +
+                ", api_id=" + api_id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
