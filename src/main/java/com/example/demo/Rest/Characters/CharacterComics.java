@@ -7,7 +7,7 @@ public class CharacterComics {
     private String character;
     private List<String> comics;
 
-    CharacterComics(String characterName){
+    public CharacterComics(String characterName){
         this.character = characterName;
         this.comics = new ArrayList<>();
     }

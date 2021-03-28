@@ -16,5 +16,15 @@ public interface CharactersRepository extends JpaRepository<Characters, Long> {
     @Query("SELECT c FROM Characters c WHERE api_id = ?1")
     Optional<Characters> findByApiId(Integer api_id);
 
+    @Query(value =
+            "SELECT characters.* " +
+            "FROM `comics_characters` cc " +
+            "INNER JOIN comics ON cc.comics_id = comics.id " +
+            "INNER JOIN comics_characters cc2 ON cc2.comics_id = comics.id " +
+            "INNER JOIN characters ON characters.id = cc2.characters_id " +
+            "WHERE cc.characters_id = ?1 " +
+            "GROUP BY id " +
+            "HAVING id != ?1", nativeQuery = true)
+    List<Characters> findCharactersComicRelated(Long characterId);
 
 }

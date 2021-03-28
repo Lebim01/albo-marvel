@@ -5,6 +5,8 @@ import com.example.demo.Database.Comics.ComicsRepository;
 import com.example.demo.Database.Creators.Creators;
 import com.example.demo.Database.Creators.CreatorsRepository;
 import com.example.demo.MarvelApi.Characters.Entities.Character;
+import com.example.demo.MarvelApi.Comics.Entities.Comic;
+import com.example.demo.Rest.Characters.CharacterComics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -139,5 +141,29 @@ public class CharactersService {
         }
 
         return editors;
+    }
+
+    public List<CharacterComics> getCharactersRelated(Long characterId){
+        List<CharacterComics> characters = new ArrayList<>();
+
+        Optional<Characters> optionalCharacters = charactersRepository.findById(characterId);
+        if(!optionalCharacters.isPresent()){
+            throw new IllegalStateException("Character does not exists");
+        }
+
+        Characters character = optionalCharacters.get();
+
+        List<Characters> _characters = charactersRepository.findCharactersComicRelated(character.getId());
+        for(Characters _character: _characters){
+            CharacterComics characterComics = new CharacterComics(_character.getName());
+            List<Comics> comics = comicsRepository.findByCharacterId(_character.getId());
+            for(Comics comic: comics){
+                characterComics.addComic(comic.getTitle());
+            }
+
+            characters.add(characterComics);
+        }
+
+        return characters;
     }
 }
