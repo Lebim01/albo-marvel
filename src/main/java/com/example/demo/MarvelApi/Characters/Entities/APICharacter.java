@@ -17,8 +17,6 @@ public class APICharacter {
             this.id = jsonNode.get("id").asInt();
             this.name = jsonNode.get("name").asText();
             this.comics = new APIComicList(jsonNode.get("comics").toString());
-
-            System.out.println("Character " + this.toString());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

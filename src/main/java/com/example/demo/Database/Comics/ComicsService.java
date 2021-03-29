@@ -4,6 +4,7 @@ import com.example.demo.MarvelApi.Comics.Entities.APIComic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -19,15 +20,15 @@ public class ComicsService {
         this.comicsCharactersRepository = comicsCharactersRepository;
     }
 
-    public boolean isExistsByApiId(Integer comidId){
-        Optional<Comics> optionalComics = comicsRepository.findByApiId(comidId);
+    public boolean isExistsByApiId(Integer comicId){
+        Optional<Comics> optionalComics = comicsRepository.findByApiId(comicId);
         return optionalComics.isPresent();
     }
 
     public Comics getComicCreateIfNotExists(APIComic comic){
         Optional<Comics> optionalComics = comicsRepository.findByApiId(comic.getId());
         if(optionalComics.isPresent()){
-            return updateComic(optionalComics.get().getId(), comic.getTitle());
+            return updateComic(optionalComics.get().getId(), comic.getTitle(), comic.getModified());
         }else{
             return addNewComic(comic);
         }
@@ -38,12 +39,12 @@ public class ComicsService {
     }
 
     public Comics addNewComic(APIComic comic){
-        Comics comics = new Comics(comic.getId(), comic.getTitle());
+        Comics comics = new Comics(comic.getId(), comic.getTitle(), comic.getModified());
         comicsRepository.save(comics);
         return comics;
     }
 
-    public Comics updateComic(Long comicId, String title){
+    public Comics updateComic(Long comicId, String title, LocalDateTime modified){
         Comics comic = comicsRepository.findById(comicId)
                 .orElseThrow(() -> new IllegalStateException("comic with id " + comicId + " does not exists"));
 
@@ -51,10 +52,17 @@ public class ComicsService {
             comic.setTitle(title);
         }
 
+        if(modified != null && !Objects.equals(comic.getModified(), modified)){
+            comic.setModified(modified);
+        }
+
         return comic;
     }
 
     public void addComicCharacter(ComicsCharacters comicsCharacters){
-        comicsCharactersRepository.save(comicsCharacters);
+        Optional<ComicsCharacters> optionalComicsCharacters = comicsCharactersRepository.findComicCharacter(comicsCharacters.getComic().getId(), comicsCharacters.getCharacter().getId());
+        if(!optionalComicsCharacters.isPresent()) {
+            comicsCharactersRepository.save(comicsCharacters);
+        }
     }
 }

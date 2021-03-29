@@ -17,4 +17,7 @@ public interface ComicsRepository extends JpaRepository<Comics, Long> {
     @Query(value = "SELECT co.* FROM Comics co INNER JOIN comics_characters cc ON cc.characters_id = ?1 AND co.id = cc.comics_id", nativeQuery = true)
     List<Comics> findByCharacterId(Long characterId);
 
+    @Query(value = "SELECT co.* FROM Comics co INNER JOIN comics_characters cc ON cc.characters_id = ?1 AND co.id = cc.comics_id WHERE modified IS NOT NULL ORDER BY modified DESC LIMIT 1", nativeQuery = true)
+    Optional<Comics> getLastByCharacter(Long characterId);
+
 }

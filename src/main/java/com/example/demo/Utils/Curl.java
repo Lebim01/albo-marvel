@@ -2,12 +2,10 @@ package com.example.demo.Utils;
 
 import java.io.*;
 
+import static com.example.demo.MarvelApi.Constants.*;
 import static com.example.demo.Utils.HelpersFunction.getTimestamp;
-import static com.example.demo.MarvelApi.Constants.PUBLIC_KEY;
-import static com.example.demo.MarvelApi.Constants.getHash;
 
 public class Curl {
-    private String url = "http://gateway.marvel.com/v1/public/";
     private String params = "apikey=" + PUBLIC_KEY + "&ts=" + getTimestamp() + "&hash=" + getHash();
     private String method;
 
@@ -25,11 +23,12 @@ public class Curl {
     }
 
     public String getResult() {
-        String[] commands = new String[]{"curl", "-X", "GET", this.url + this.method + "?" + this.params};
+        String[] commands = new String[]{"curl", "-X", "GET", API_MARVEL_URL + this.method + "?" + this.params};
         return curl(commands);
     }
 
     public String getResultUrl(String url){
+        System.out.println("EXECUTING CURL");
         String[] commands = new String[]{"curl", "-X", "GET", url + "?" + this.params};
         return curl(commands);
     }

@@ -8,6 +8,11 @@ public class APICreator {
     private Integer id;
     private String fullName;
 
+    public APICreator(Integer id, String fullName){
+        this.id = id;
+        this.fullName = fullName;
+    }
+
     APICreator(String json){
         ObjectMapper objectMapper = new ObjectMapper();
         try {

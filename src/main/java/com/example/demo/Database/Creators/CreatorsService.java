@@ -1,5 +1,6 @@
 package com.example.demo.Database.Creators;
 
+import com.example.demo.Database.Comics.ComicsCharacters;
 import com.example.demo.Database.Comics.ComicsCreators;
 import com.example.demo.Database.Comics.ComicsCreatorsRepository;
 import com.example.demo.MarvelApi.Creators.Entities.APICreator;
@@ -56,6 +57,9 @@ public class CreatorsService {
     }
 
     public void addComicCreator(ComicsCreators comicsCreators){
-        comicsCreatorsRepository.save(comicsCreators);
+        Optional<ComicsCreators> optionalComicsCreators = comicsCreatorsRepository.findComicCreator(comicsCreators.getComic().getId(), comicsCreators.getCreator().getId());
+        if(!optionalComicsCreators.isPresent()) {
+            comicsCreatorsRepository.save(comicsCreators);
+        }
     }
 }

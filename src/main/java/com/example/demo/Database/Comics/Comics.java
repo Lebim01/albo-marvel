@@ -3,6 +3,7 @@ package com.example.demo.Database.Comics;
 import com.example.demo.Database.Characters.Characters;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -11,12 +12,13 @@ import java.util.List;
 })
 public class Comics {
     @Id
-    @SequenceGenerator(name="comics_sequence", sequenceName="comics_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "comics_sequence", sequenceName = "comics_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comics_sequence")
     private Long id;
 
     private Integer api_id;
     private String title;
+    private LocalDateTime modified;
 
     @OneToMany(mappedBy = "comic")
     private List<ComicsCharacters> comicsCharacters;
@@ -27,15 +29,17 @@ public class Comics {
     public Comics() {
     }
 
-    public Comics(Long id, Integer api_id, String title) {
+    public Comics(Long id, Integer api_id, String title, LocalDateTime modified) {
         this.id = id;
         this.api_id = api_id;
         this.title = title;
+        this.modified = modified;
     }
 
-    public Comics(Integer api_id, String title) {
+    public Comics(Integer api_id, String title, LocalDateTime modified) {
         this.api_id = api_id;
         this.title = title;
+        this.modified = modified;
     }
 
     public Long getId() {
@@ -84,5 +88,13 @@ public class Comics {
 
     public void setComicsCharacters(List<ComicsCharacters> comicsCharacters) {
         this.comicsCharacters = comicsCharacters;
+    }
+
+    public LocalDateTime getModified() {
+        return modified;
+    }
+
+    public void setModified(LocalDateTime modified) {
+        this.modified = modified;
     }
 }

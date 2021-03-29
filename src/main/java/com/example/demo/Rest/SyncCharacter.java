@@ -6,20 +6,15 @@ import com.example.demo.Database.Comics.*;
 import com.example.demo.Database.Creators.Creators;
 import com.example.demo.Database.Creators.CreatorsService;
 import com.example.demo.MarvelApi.Characters.Entities.APICharacter;
-import com.example.demo.MarvelApi.Characters.Entities.APICharacterSummary;
-import com.example.demo.MarvelApi.Characters.APIGetCharacter;
-import com.example.demo.MarvelApi.Characters.APIGetCharacterResponse;
-import com.example.demo.MarvelApi.Characters.APIGetCharactersResponse;
+import com.example.demo.MarvelApi.Comics.APIGetComicsCharactersResponse;
+import com.example.demo.MarvelApi.Comics.APIGetComicsResponse;
 import com.example.demo.MarvelApi.Comics.Entities.APIComic;
-import com.example.demo.MarvelApi.Comics.Entities.APIComicSummary;
-import com.example.demo.MarvelApi.Comics.APIGetComicResponse;
 import com.example.demo.MarvelApi.Creators.Entities.APICreator;
 import com.example.demo.MarvelApi.Creators.Entities.APICreatorSummary;
-import com.example.demo.MarvelApi.Creators.APIGetCreatorResponse;
 import com.example.demo.Utils.Curl;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,72 +44,83 @@ public class SyncCharacter {
 
     public void sync(Characters character){
         System.out.println("Syncing " + character.getName());
+
         if(!needSync(character.getId())){
             System.out.println(character.getName() + " don't need sync");
             return;
         }
 
+        /**
+         * Update last_sync
+         */
         charactersService.updateCharacter(character.getId(), character.getName(), LocalDateTime.now());
 
-        APIGetCharacter getCharacter = new APIGetCharacter();
-        APIGetCharacterResponse getCharacterResponse = getCharacter.getCharacter(character.getApi_id());
-        APICharacter apiCharacter = getCharacterResponse.getData().getResults().get(0);
+        /**
+         * Get all comics pages, by 100 records per page
+         * only bring from the last modification using filter modifiedSince
+         *
+         * @param modifiedSince (format is: 2014-06-10T16:12:58-0400)
+         */
+        Optional<Comics> last_comic = charactersService.getLastComic(character.getId());
+        String modifiedSince = "";
+        if(last_comic.isPresent()){
+            modifiedSince = last_comic.get().getModified().format(DateTimeFormatter.ISO_DATE_TIME);
+        }
 
-        for(APIComicSummary cs: apiCharacter.getComics().getItems()){
-            Curl curlComic  = new Curl();
-            APIGetComicResponse comicResponse = new APIGetComicResponse(curlComic.getResultUrl(cs.getResourceURI()));
+        String filter = modifiedSince.isEmpty() ? "" : "&modifiedSince="+modifiedSince;
+        int offset = 0;
+        int pages = 1;
+        int current_page = 1;
+        int limit = 100;
 
-            for(APIComic comic: comicResponse.getData().getResults()){
+        do {
+            System.out.println("characters/"+character.getApi_id()+"/comics?" + filter + "&limit="+limit+"&offset="+offset+"&orderBy=modified");
+            Curl curlComics = new Curl("characters/"+character.getApi_id()+"/comics", filter + "&limit="+limit+"&offset="+offset+"&orderBy=modified");
+            APIGetComicsResponse apiGetComicsResponse = new APIGetComicsResponse(curlComics.getResult());
+
+            /**
+             * TODO: I don't understand why Math.ceil() doesn't work
+             */
+            pages = apiGetComicsResponse.getData().getTotal() / limit + ((apiGetComicsResponse.getData().getTotal() % limit == 0) ? 0 : 1);
+
+            for(APIComic comic : apiGetComicsResponse.getData().getResults()){
+                System.out.println("APIComic: " + comic.getTitle());
+                Comics _comic = comicsService.getComicCreateIfNotExists(comic);
+
                 /**
-                 * Sync new comic if does not exists
+                 * Get characters related by comic
                  */
-                boolean isNew = !comicsService.isExistsByApiId(comic.getId());
+                Curl curlComicsCharacters = new Curl("comics/"+_comic.getApi_id()+"/characters", "&limit=100");
+                APIGetComicsCharactersResponse apiGetComicsCharacters = new APIGetComicsCharactersResponse(curlComicsCharacters.getResult());
+                for (APICharacter apiCharacter : apiGetComicsCharacters.getData().getResults()) {
+                     Characters _character_related = charactersService.getCharacterCreateIfNotExists(apiCharacter);
+                     ComicsCharacters _comicsCharacters = new ComicsCharacters(_comic, _character_related);
+                     comicsService.addComicCharacter(_comicsCharacters);
+                }
 
-                if(isNew) {
-                    Comics _comic = comicsService.getComicCreateIfNotExists(comic);
+                /**
+                 * Get creators related by comic
+                 */
+                for (APICreatorSummary crs : comic.getCreators().getItems()) {
+                    String[] parts = crs.getResourceURI().split("/");
+                    String id = parts[parts.length-1];
+                    APICreator creator = new APICreator(Integer.valueOf(id), crs.getName());
 
-                    List<ComicsCreators> comicsCreators = new ArrayList<>();
-                    List<ComicsCharacters> comicsCharacters = new ArrayList<>();
-
-                    /**
-                     * Get characters related by comic
-                     */
-                    for (APICharacterSummary chs : comic.getCharacters().getItems()) {
-                        Curl curlCharacter = new Curl();
-                        APIGetCharactersResponse characterResponse = new APIGetCharactersResponse(curlCharacter.getResultUrl(chs.getResourceURI()));
-                        APICharacter character_related = characterResponse.getData().getResults().get(0);
-
-                        Characters _character_related = charactersService.getCharacterCreateIfNotExists(character_related);
-
-                        ComicsCharacters _comicsCharacters = new ComicsCharacters(_comic, _character_related);
-                        comicsService.addComicCharacter(_comicsCharacters);
+                    switch (crs.getRole()) {
+                        case "colorist":
+                        case "editor":
+                        case "writer":
+                            Creators _creator = creatorsService.getCreatorCreateIfNotExists(creator);
+                            ComicsCreators _comicsCreators = new ComicsCreators(_comic, _creator, crs.getRole());
+                            creatorsService.addComicCreator(_comicsCreators);
+                            break;
                     }
-
-                    /**
-                     * Get creators (by role [writer, editor, colorist]) and save by comic
-                     */
-                    for (APICreatorSummary crs : comic.getCreators().getItems()) {
-                        Curl curlCreator = new Curl();
-                        APIGetCreatorResponse creatorResponse = new APIGetCreatorResponse(curlCreator.getResultUrl(crs.getResourceURI()));
-                        APICreator creator = creatorResponse.getData().getResults().get(0);
-
-                        switch (crs.getRole()) {
-                            case "colorist":
-                            case "editor":
-                            case "writer":
-                                Creators _creator = creatorsService.getCreatorCreateIfNotExists(creator);
-                                ComicsCreators _comicsCreators = new ComicsCreators(_comic, _creator, crs.getRole());
-                                creatorsService.addComicCreator(_comicsCreators);
-                                comicsCreators.add(_comicsCreators);
-                                break;
-                        }
-                    }
-
-                    _comic.setComicsCreators(comicsCreators);
-                    _comic.setComicsCharacters(comicsCharacters);
                 }
             }
-        }
+
+            current_page++;
+            offset += limit;
+        }while(current_page <= pages);
     }
 
     private boolean needSync(Long id){

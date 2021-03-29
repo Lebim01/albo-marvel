@@ -5,7 +5,9 @@ import com.example.demo.Database.Characters.Characters;
 import javax.persistence.*;
 
 @Entity
-@Table(name="comics_characters")
+@Table(name="comics_characters", indexes = {
+        @Index(unique = true, name = "idx_id_comic_character", columnList = "comics_id, characters_id")
+})
 public class ComicsCharacters {
     @Id
     @SequenceGenerator(name="comics_characters_sequence", sequenceName="comics_characters_sequence", allocationSize = 1)

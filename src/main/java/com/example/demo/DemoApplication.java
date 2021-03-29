@@ -39,12 +39,19 @@ class SchedulingConfiguration {
 		this.creatorsService = creatorsService;
 	}
 
+	@Scheduled(fixedRate = 10)
+	void syncCharactersInit(){
+		System.out.println("Executing cron init");
+		SyncCharacter syncCharacter = new SyncCharacter(charactersService, comicsService, creatorsService);
+		syncCharacter.syncAll();
+	}
+
 	/**
 	 * Exec sync job every day at 01:00 am
 	 */
-	@Scheduled(cron = "0 */5 * * * *")
+	@Scheduled(cron = "0 0 1 * * *")
 	void syncCharacters(){
-		System.out.println("Executing cron");
+		System.out.println("Executing cron at 01:00 am");
 		SyncCharacter syncCharacter = new SyncCharacter(charactersService, comicsService, creatorsService);
 		syncCharacter.syncAll();
 	}

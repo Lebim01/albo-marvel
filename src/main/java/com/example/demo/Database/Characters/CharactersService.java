@@ -162,4 +162,8 @@ public class CharactersService {
 
         return characters;
     }
+
+    public Optional<Comics> getLastComic(Long characterId){
+        return comicsRepository.getLastByCharacter(characterId);
+    }
 }

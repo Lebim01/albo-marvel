@@ -37,9 +37,6 @@ public class CollaboratorsController {
         }
         Characters character = optionalCharacters.get();
 
-        SyncCharacter sync = new SyncCharacter(charactersService, comicsService, creatorsService);
-        sync.sync(character);
-
         CollaboratorsResponse response = new CollaboratorsResponse();
         response.setLast_sync(character.getLast_sync());
         response.setCharacter(character.getName());
